@@ -26,10 +26,9 @@ export default function Root() {
       <Navbar />
       <Outlet />
       <Footer />
-      
       <GoToTop/>
       <HotToster/>
-      <Tooltip id="my-tooltip" />
+      <Tooltip className="z-50" id="my-tooltip" />
     </>
   );
 }

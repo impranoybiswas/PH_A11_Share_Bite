@@ -1,18 +1,21 @@
 import { DotLottieReact } from '@lottiefiles/dotlottie-react'
-import React from 'react'
+import React, { useContext } from 'react'
 import { navLinks, privateLinks } from '../utilities/navlinks'
 import { Link, NavLink } from 'react-router'
 import { FaAppStore, FaFacebookF, FaGooglePlay, FaTwitter, FaYoutube } from 'react-icons/fa'
+import { FirebaseContext } from '../providers/Context'
 
 function Footer() {
+  const {user} = useContext(FirebaseContext);
   return (
     <footer className='w-full flex flex-col border-t-[2px] border-secondary'>
-      <section className='w-full h-auto md:min-h-100 bg-[#243640] relative overflow-hidden pb-20'>
+      <section className='w-full h-auto md:min-h-110 bg-[#243640] relative overflow-hidden pb-20'>
 
         <div className='w-full absolute bottom-0 z-1 bg-[#243640]'>
         <DotLottieReact className='w-full mix-blend-multiply scale-120 lg:-translate-y-16' src="../assets/footer.lottie" loop autoplay />
         </div>
         <div className='flex flex-col justify-center items-center w-full h-full z-3 relative mt-6'>
+        <img className='size-16 brightness-0 invert animate-pulse' src="./logo.svg" alt="" />
         <div className='text-2xl md:text-4xl mb-4 font-semibold text-center text-white shadow-text-xs'>Share Bite</div>
         <div className='w-11/12 h-[2px] mb-4 bg-gradient-to-r from-transparent to-transparent via-secondary'></div>
         <div className='flex justify-center items-center gap-5 mb-3'>
@@ -23,7 +26,7 @@ function Footer() {
         </div>
 
         <div className='flex justify-center items-center gap-5'>
-          {
+          {user &&
             privateLinks.map((link, index) => <NavLink key={index} to={link.path} className={({ isActive }) => `text-base md:text-lg font-semibold hover:text-secondary transition-all duration-300 ease-in-out ${isActive ? 'text-secondary' : 'text-white'}`}>{link.name}</NavLink>)
           }
 

@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import { motion } from "motion/react";
 import BlurText from "../components/BlurText";
 
 
 const handleAnimationComplete = () => {
-  console.log('Animation completed!');
+  
 };
 
 export default function Header() {

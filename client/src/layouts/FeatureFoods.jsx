@@ -64,18 +64,19 @@ const FeatureCard = ({ feature }) => {
         data-aos="zoom-in"
         data-tooltip-id="my-tooltip"
         data-tooltip-content="View Details"
-        className="w-full min-h-34 bg-secondary/60 hover:bg-secondary/80 flex flex-col justify-center items-center border-[1px] border-secondary/30 rounded-lg transition-all duration-300 ease-in-out"
+        className="w-full min-h-34 bg-secondary/60 hover:bg-secondary/80 flex flex-col justify-center items-center border-[1px] border-secondary/30 rounded-lg transition-all duration-300 ease-in-out
+        text-accent cursor-pointer"
       >
-        <h1 className="text-xl md:text-2xl font-semibold text-primary text-center">
+        <h1 className="text-xl md:text-2xl font-semibold text-center">
           {name}
         </h1>
-        <p className="text-base md:text-lg text-primary text-center">
+        <p className="text-base md:text-lg text-center">
           {pickup_location}
         </p>
-        <p className="text-base md:text-lg text-primary text-center">
+        <p className="text-base md:text-lg text-center">
           For <span className="font-semibold">{quantity}</span> Peoples
         </p>
-        <p className="text-base md:text-lg text-primary text-center">
+        <p className="text-base md:text-lg text-center">
           Expired: {expired_date}
         </p>
       </div>

@@ -20,9 +20,9 @@ function Navbar() {
       className={`hidden md:grid grid-cols-4 py-2 justify-center items-center text-white mx-auto transition-all duration-100 ease-in-out bg-gradient-to-l from-[#445275] to-[#2f3449] shadow-sm
       ${isScrolled ? 'w-full h-16 rounded-none mt-0 px-10' : 'w-11/12 rounded-full mt-8 px-2'}`}>
       {/* Site Title */}
-      <div className={`flex justify-start items-center font-semibold text-2xl gap-2
-        ${isScrolled ? 'pl-0' : 'pl-0'}`}> 
-        <img className='w-10 h-10 rounded-full object-cover' src="https://i.ibb.co.com/why2nWXk/food-delivery.gif" alt="" />
+      <div className={`flex justify-start items-center font-semibold text-2xl gap-2 
+        ${isScrolled ? 'pl-0' : 'pl-3'}`}> 
+        <img className='size-7 brightness-0 invert animate-pulse' src="./logo.svg" alt="" />
         <Link to={'/'} >Share Bite</Link>
         </div>
         {/* Nav Link */}
@@ -42,7 +42,7 @@ function Navbar() {
       {
         user && 
         <>
-        <button className="relative px-4 transition-all duration-300 ease-in-out flex justify-center gap-2 items-center py-1 rounded-full border-2 hover:border-white hover:bg-white/10 border-transparent" popoverTarget="popover-1" style={{ anchorName: "--anchor-1" }}>Manage <IoIosArrowDropdown size={20} /></button>
+        <button className="relative px-4 transition-all duration-300 ease-in-out cursor-pointer flex justify-center gap-2 items-center py-1 rounded-full border-2 hover:border-white hover:bg-white/10 border-transparent" popoverTarget="popover-1" style={{ anchorName: "--anchor-1" }}>Manage <IoIosArrowDropdown size={20} /></button>
         
         <div className="dropdown menu mt-4 w-52 min-w-50 rounded-box bg-gradient-to-l from-[#445275] to-[#2f3449] shadow-sm py-4" popover="auto" id="popover-1" style={{ positionAnchor: "--anchor-1" } }>
   {
@@ -57,9 +57,10 @@ function Navbar() {
       {link.name}
       </NavLink>)
   }
+  
 </div>
         </>
-      }
+      }<ThemeToggler/>
       </div>
       {/* User Photo & Theme Toggler */}
       <div className='flex justify-end items-center gap-2'>
@@ -93,14 +94,14 @@ function Navbar() {
         </div>
         </div>
         :
-        <>
+        <div className='flex justify-center items-center gap-0'>
         <NavLink
         data-tooltip-id="my-tooltip"
         data-tooltip-content="Join Our Community" 
         to='/register'
         className={({ isActive }) =>
         `relative w-fit h-8 px-4 transition-all duration-300 ease-in-out flex justify-center items-center
-        bg-[#00bfe7] rounded-full border-2 hover:border-white py-1 hover:bg-white/10
+        bg-[#00bfe7] rounded-l-full border-2 hover:border-white py-1 hover:bg-white/10
         ${isActive ? 'border-white' : 'border-transparent'}`
         } >REGISTER</NavLink>
         <NavLink
@@ -109,14 +110,13 @@ function Navbar() {
         to='/signin'
         className={({ isActive }) =>
         `relative w-fit h-8 px-4 transition-all duration-300 ease-in-out flex justify-center items-center
-        bg-[#00bfe7] rounded-full border-2 hover:border-white py-1 hover:bg-white/10
+        bg-[#00bfe7] rounded-r-full border-2 hover:border-white py-1 hover:bg-white/10
         ${isActive ? 'border-white' : 'border-transparent'}`
         } >SIGN IN</NavLink>
-        </>
+        </div>
         )
         }
-      <span className='w-10 h-10 flex justify-center items-center bg-secondary rounded-full'>
-        <ThemeToggler/></span>
+      
       </div>
     </section>
 
@@ -125,7 +125,7 @@ function Navbar() {
       ${isScrolled ? 'w-full h-16 rounded-none mt-0' : 'w-11/12 rounded-full mt-5'}`}>
       <div 
       className="flex justify-start items-center font-semibold text-xl pl-1 gap-2 text-white">
-        <img className='w-8 h-8 rounded-full object-cover' src="https://i.ibb.co.com/why2nWXk/food-delivery.gif" alt="" />
+        <img className='size-6 brightness-0 invert animate-pulse' src="./logo.svg" alt="" />
         <Link to={'/'} >Share Bite</Link>
       </div>
       
@@ -135,14 +135,19 @@ function Navbar() {
         className='flex justify-center items-center w-10 h-10 text-2xl text-white'>
         <CgMenuRightAlt />
         </button>
-        <div className={`w-full h-dvh bg-base-100 absolute top-0 left-0 z-40 pt-18 pb-3 px-3
+        <div className={`w-full h-dvh bg-base-100 absolute top-0 left-0 z-45 py-6 px-3
         ${openDrawer ? 'translate-x-0' : 'translate-x-full'}
         transition-all duration-500 ease-in-out`}>
-        <button 
-        onClick={() => setOpenDrawer(false)}
-        className='absolute top-4 right-4 flex justify-center items-center w-10 h-10 text-3xl opacity-80'>
-          <IoCloseOutline />
-        </button>
+          <div className='flex justify-between items-center px-3 pb-6'>
+            <span><ThemeToggler/></span>
+            <span 
+            onClick={() => setOpenDrawer(false)}
+            className='flex justify-center items-center size-10 text-3xl opacity-80'>
+            <IoCloseOutline />
+            </span>
+
+          </div>
+  
         <div
         onClick={() => setOpenDrawer(false)}
         className='flex flex-col items-center justify-between h-full'>
@@ -206,9 +211,11 @@ function Navbar() {
         </div>
         </div>
         <div 
-        className='flex gap-3 w-full absolute bottom-10 left-0 p-4'>
-        <button onClick={signOutUser} className='btn flex-1 shadow-sm rounded-full btn-primary'>Sign Out</button>
-        <span className='btn btn-primary shadow-sm btn-circle'><ThemeToggler/></span>
+        className='flex gap-3 w-full absolute bottom-10 left-0 p-4 justify-end'>
+        {
+          user && <button onClick={signOutUser} className='btn flex-1 shadow-sm rounded-full btn-primary'>Sign Out</button>
+        }
+        
         </div>
         
         </div>

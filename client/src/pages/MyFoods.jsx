@@ -82,21 +82,17 @@ const MyFoodCard = ({ item, handleDelete }) => {
 
   return (
     <div className="flex flex-col md:flex-row gap-4 w-full min-h-40 rounded-lg border-[1px] border-gray-200 p-3 shadow-sm ">
-      <div className="w-full h-40 md:w-40">
+      <div className="w-full h-36 md:w-36">
       <img
         className="w-full h-full rounded-lg object-cover border-[1px] border-gray-200"
         src={image_url}
         alt={name}
       />
       </div>
-      <div className="flex-1 flex-col gap-2 w-full">
+      <div className="flex-1 flex-col md:flex-row gap-2 md:gap-4 w-full flex">
+        <div>
         <div className="font-semibold text-xl flex items-center gap-3 mb-2">
           <span>{name}</span>
-          {order_by.user && (
-            <span className="text-xs px-2 rounded-full py-1 bg-orange-100 text-orange-700 border-[1px] border-orange-500">
-              ORDERED
-            </span>
-          )}
         </div>
         <div className="opecity-80">{pickup_location}</div>
         <div className="opecity-80">
@@ -107,10 +103,19 @@ const MyFoodCard = ({ item, handleDelete }) => {
           <span>Expire Date : </span>
           {expired_date}
         </div>
+        {order_by.user && (
+            <div className="text-xs px-2 rounded-full py-1 bg-orange-100 text-orange-700 border-[1px] border-orange-500 mt-2 w-fit">
+              ORDERED
+            </div>
+          )}
+        </div>
+
+        <div className="border-[1px] border-gray-200 px-4 py-2 my-2 rounded-lg flex-1"> 
         
         { order_by.user ? (
-<div className="border-[1px] border-gray-200 px-4 py-2 my-2 rounded-lg w-fit"> 
-<div className="opecity-80 flex items-center flex-wrap gap-2 my-2">
+
+          <>
+          <div className="opecity-80 flex items-center flex-wrap gap-2 my-2">
           <span>Ordered By : </span>
           <div className="flex items-center gap-2 border-[1px] border-gray-200 px-2 py-1 rounded-full">
             <img className="w-5 h-5 object-cover rounded-full" src={photo_url} onError={avatarError} />
@@ -132,13 +137,16 @@ const MyFoodCard = ({ item, handleDelete }) => {
           <span>Location : </span>
           {order_by.location}
         </div>
-</div>
+          </>
+
           ) : "No Order Placed"
         }
+
+</div>
         
       </div>
     
-      <div className="w-full md:w-fit flex justify-center">
+      <div className="w-full md:w-fit flex justify-center items-center">
       <div className="join join-horizontal md:join-vertical">
       <button 
       onClick={() => {navigate(`/food/${_id}`);}}

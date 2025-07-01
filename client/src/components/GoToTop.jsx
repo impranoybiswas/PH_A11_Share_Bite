@@ -17,7 +17,7 @@ export default function GoToTop() {
         data-tooltip-id="my-tooltip"
         data-tooltip-content="GO TO TOP"
         onClick={scrollToTop}
-        className="fixed cursor-pointer bottom-6 right-6 animate-bounce bg-primary/80 rounded-full hover:bg-primary text-white z-50"
+        className="fixed cursor-pointer bottom-6 right-6 animate-bounce bg-primary/80 rounded-full hover:bg-primary text-white z-40"
         color="#fff"
         size={40}
       />
