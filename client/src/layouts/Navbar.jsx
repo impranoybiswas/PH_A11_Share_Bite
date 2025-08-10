@@ -87,8 +87,8 @@ function Navbar() {
         <span className='text-sm opacity-70'>
           {user?.email ? user?.email : user?.email}
         </span>
-        <Link to='/profile' className="text-sm font-semibold">
-        Go to Profile <span aria-hidden="true">&rarr;</span>
+        <Link to='/dashboard' className="text-sm font-semibold">
+        Dashboard <span aria-hidden="true">&rarr;</span>
         </Link>
         <button onClick={signOutUser} className='btn w-full mt-3 btn-secondary'>Sign Out</button>
         </div>

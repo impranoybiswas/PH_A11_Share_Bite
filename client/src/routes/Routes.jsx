@@ -13,6 +13,8 @@ import MyFoods from "../pages/MyFoods";
 import Profile from "../pages/Profile";
 import MyRequests from "../pages/MyRequests";
 import Terms from "../pages/Tarms";
+import Dashboard from "../dashboard/Dashboard";
+import DHome from "../dashboard/DHome";
 
 export const router = createBrowserRouter([
   {
@@ -51,14 +53,8 @@ export const router = createBrowserRouter([
         path : "/about",
         Component: About
       },
-      {
-        path: "/add-food",
-        element: (
-          <PrivateRoute>
-            <AddFood />
-          </PrivateRoute>
-        ),
-      },
+      
+      
       {
         path: "/food/:id",
         element: (
@@ -91,6 +87,33 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       }
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <Dashboard />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        path: "/dashboard",
+        element: (
+          <PrivateRoute>
+            <DHome />
+          </PrivateRoute>
+        ),
+      },
+      
+      {
+        path: "/dashboard/add-food",
+        element: (
+          <PrivateRoute>
+            <AddFood />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 ]);
