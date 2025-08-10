@@ -6,7 +6,7 @@ import { dashbordLinks } from "../utilities/DashbordLinks";
 
 import Aos from "aos";
 import HotToster from "../components/HotToster";
-import { FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaSignOutAlt } from "react-icons/fa";
 import ThemeToggler from "../components/ThemeToggler";
 
 export default function Dashboard() {
@@ -62,6 +62,21 @@ export default function Dashboard() {
       <HotToster />
       <main className="w-full flex gap-0 pt-14">
         <div className="hidden md:flex flex-col w-auto bg-primary text-white transition-all duration-500 ease-in-out min-h-dvh">
+          <Link className="w-full flex justify-start items-center gap-2 text-lg font-semibold transition-all duration-300 ease-in-out hover:bg-secondary cursor-pointer">
+            <span
+              className={`text-sm w-14 h-10 flex justify-center items-center`}
+            >
+              <FaHome />
+            </span>
+            <span
+                className={`${
+                  isIcon ? "hidden" : "flex"
+                } pr-4 transition-all duration-500 ease-in-out`}
+              >
+         Dashboard
+              </span>
+            
+          </Link>
           {dashbordLinks.map((link, index) => (
             <NavLink
               key={index}
@@ -94,13 +109,14 @@ export default function Dashboard() {
             onClick={signOutUser}
             className="flex items-center justify-center gap-2 text-lg font-semibold transition-all duration-300 ease-in-out hover:bg-secondary py-2 m-3 rounded-full cursor-pointer"
           >
-            <FaSignOutAlt /> <span
-                className={`${
-                  isIcon ? "hidden" : "flex"
-                } pr-4 transition-all duration-500 ease-in-out`}
-              >
-                Sign Out
-              </span>
+            <FaSignOutAlt />{" "}
+            <span
+              className={`${
+                isIcon ? "hidden" : "flex"
+              } pr-4 transition-all duration-500 ease-in-out`}
+            >
+              Sign Out
+            </span>
           </button>
         </div>
         <div
@@ -108,6 +124,18 @@ export default function Dashboard() {
             isIcon ? "flex" : "hidden"
           } bg-primary text-white flex flex-col pt-14`}
         >
+          <Link className="w-full flex justify-start items-center gap-2 text-lg font-semibold transition-all duration-300 ease-in-out hover:bg-secondary cursor-pointer">
+            <span
+              className={`text-sm w-14 h-10 flex justify-center items-center`}
+            >
+              <FaHome />
+            </span>
+           
+        
+         Dashboard
+              
+            
+          </Link>
           {dashbordLinks.map((link, index) => (
             <NavLink
               key={index}
