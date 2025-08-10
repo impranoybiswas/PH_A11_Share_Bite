@@ -153,6 +153,34 @@ async function run() {
       const result = await foodCollection.deleteOne(filter);
       res.send(result);
     });
+
+    // Get total number of foods
+app.get("/stats/total-foods", async (req, res) => {
+  try {
+    const totalFoods = await foodCollection.countDocuments({});
+    res.send({ totalFoods });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Get number of foods added by a specific user
+app.get("/stats/user-foods/:email", async (req, res) => {
+  try {
+    const email = req.params.email;
+    if (!email) {
+      return res.status(400).send({ message: "Email is required" });
+    }
+
+    const userFoodsCount = await foodCollection.countDocuments({ "author.email": email });
+    res.send({ userFoodsCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
     //Close The Conection
   } finally {
     // await client.close();
