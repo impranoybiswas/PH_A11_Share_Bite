@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { FirebaseContext, ScrollContext } from '../providers/Context'
-import { navLinks, privateLinks } from '../utilities/navlinks'
+import { navLinks } from '../utilities/navlinks'
 import { Link, NavLink } from 'react-router'
 import ThemeToggler from '../components/ThemeToggler'
 import { IoCloseOutline } from 'react-icons/io5'
@@ -39,28 +39,7 @@ function Navbar() {
         {link.name}
         </NavLink>)
       }
-      {
-        user && 
-        <>
-        <button className="relative px-4 transition-all duration-300 ease-in-out cursor-pointer flex justify-center gap-2 items-center py-1 rounded-full border-2 hover:border-white hover:bg-white/10 border-transparent" popoverTarget="popover-1" style={{ anchorName: "--anchor-1" }}>Manage <IoIosArrowDropdown size={20} /></button>
-        
-        <div className="dropdown menu mt-4 w-52 min-w-50 rounded-box bg-gradient-to-l from-[#445275] to-[#2f3449] shadow-sm py-4" popover="auto" id="popover-1" style={{ positionAnchor: "--anchor-1" } }>
-  {
-    privateLinks.map(link => 
-      <NavLink
-      key={link.name} 
-      to={link.path}
-      className={({ isActive }) =>
-      `relative px-4 transition-all duration-300 ease-in-out flex items-center
-      py-1 rounded-full border-2 hover:border-white hover:bg-white/10 mb-1
-      ${isActive ? 'border-white' : 'border-transparent'}`}>
-      {link.name}
-      </NavLink>)
-  }
-  
-</div>
-        </>
-      }<ThemeToggler/>
+      <ThemeToggler/>
       </div>
       {/* User Photo & Theme Toggler */}
       <div className='flex justify-end items-center gap-2'>
@@ -169,8 +148,8 @@ function Navbar() {
                 <span className='text-sm opacity-70'>
                 {dbUser?.email ? dbUser?.email : user?.email}
                 </span>
-                <Link to='/profile' className="text-sm font-semibold">
-                Go to Profile <span aria-hidden="true">&rarr;</span>
+                <Link to='/dashboard' className="text-sm font-semibold">
+                Dashboard <span aria-hidden="true">&rarr;</span>
                 </Link>
                 </div>
                 </div>
@@ -195,17 +174,6 @@ function Navbar() {
         ${isActive ? 'text-secondary' : ''}`}>
         {link.name}
         </NavLink>)
-      }
-      {user &&
-        privateLinks.map(link => 
-          <NavLink
-          key={link.name} 
-          to={link.path}
-          className={({ isActive }) =>
-          `relative px-4 transition-all duration-300 ease-in-out flex justify-center items-center text-xl py-1
-          ${isActive ? 'text-secondary' : ''}`}>
-          {link.name}
-          </NavLink>)
       }
 
         </div>

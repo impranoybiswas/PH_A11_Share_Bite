@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,13 +10,11 @@ import {
   Tooltip,
   Legend
 } from "chart.js";
-import { FirebaseContext } from "../providers/Context";
 import useMyFoods from "../hooks/useMyFoods";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function DHome() {
-  const { user } = useContext(FirebaseContext);
   const [totalFoods, setTotalFoods] = useState(null);
   const { myFoods } = useMyFoods();
 
@@ -24,7 +22,7 @@ export default function DHome() {
   useEffect(() => {
     const fetchTotalFoods = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/stats/total-foods");
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/stats/total-foods`);
         setTotalFoods(res.data.totalFoods);
       } catch (error) {
         console.error("Error fetching total foods:", error);
