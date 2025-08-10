@@ -6,12 +6,12 @@ import Error from "../pages/Error";
 import About from "../pages/About";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import AddFood from "../pages/AddFood";
+import AddFood from "../dashboard/AddFood";
 import AvailableFoods from "../pages/AvailableFoods";
 import FoodDetails from "../pages/FoodDetails";
-import MyFoods from "../pages/MyFoods";
-import Profile from "../pages/Profile";
-import MyRequests from "../pages/MyRequests";
+import MyFoods from "../dashboard/MyFoods";
+import Profile from "../dashboard/Profile";
+import MyRequests from "../dashboard/MyRequests";
 import Terms from "../pages/Tarms";
 import Dashboard from "../dashboard/Dashboard";
 import DHome from "../dashboard/DHome";
@@ -63,30 +63,7 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      {
-        path: "/my-foods",
-        element: (
-          <PrivateRoute>
-            <MyFoods />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/profile",
-        element: (
-          <PrivateRoute>
-            <Profile />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/my-requests",
-        element: (
-          <PrivateRoute>
-            <MyRequests />
-          </PrivateRoute>
-        ),
-      }
+     
     ],
   },
   {
@@ -114,6 +91,30 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+      {
+        path: "/dashboard/my-foods",
+        element: (
+          <PrivateRoute>
+            <MyFoods />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/my-profile",
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/my-requests",
+        element: (
+          <PrivateRoute>
+            <MyRequests />
+          </PrivateRoute>
+        ),
+      }
     ],
   },
 ]);
