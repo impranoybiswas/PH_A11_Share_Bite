@@ -60,7 +60,7 @@ export default function Login() {
         email: user.email,
       };
       const res = await axios.post(
-        "${import.meta.env.VITE_SERVER_URL}/add-user",
+        `${import.meta.env.VITE_SERVER_URL}/add-user`,
         userData
       );
       console.log("MongoDB response:", res.data);
