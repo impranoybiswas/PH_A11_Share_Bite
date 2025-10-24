@@ -15,6 +15,8 @@ export default function FoodCard({ food }) {
 
     const {authorData} = useAuthor(author);
 
+    console.log(authorData);
+
   return <div 
   data-aos="fade-up"
      data-aos-anchor-placement="top-bottom"

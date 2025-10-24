@@ -39,7 +39,7 @@ export default function UpdateProfile() {
         updateData(displayName, formData.photo_url);
 
         axios
-      .patch(`${import.meta.env.VITE_SERVER_URL}/update-user/${user.email}`, userData)
+      .patch(`${import.meta.env.VITE_SERVER_URL}/users/update/${user.email}`, userData)
       .then(() => {
         toast.success("Updated Successfully");
       })

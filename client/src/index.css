@@ -19,3 +19,7 @@
   --color-secondary: #05add1;
   --color-accent: #d4e2ea;
 }
+
+*{
+  transition: all .3s ease-in-out;
+}

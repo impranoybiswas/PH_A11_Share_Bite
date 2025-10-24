@@ -27,10 +27,10 @@ export default function Services() {
 
     ];
   return (
-    <div className='w-full grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-5'>
+    <div className='w-full grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 lg:gap-7'>
         {
             services.map((item, index) => (
-                <div data-aos="fade-up" className="shadow-md rounded-lg border-[1px] border-secondary w-full overflow-hidden relative flex flex-col gap-2 justify-center items-center p-2 lg:p-5 bg-secondary/10" key={index}>
+                <div data-aos="fade-up" className="shadow-md rounded-xl border-[1px] border-secondary w-full overflow-hidden relative flex flex-col gap-2 justify-center items-center p-2 lg:p-5 bg-secondary/10" key={index}>
 
                     <img className='rounded-full' src={item.image} alt={item.name} />
                     <span className='font-semibold text-xl lg:text-2xl mt-4'>{item.name}</span>

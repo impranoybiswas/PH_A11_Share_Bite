@@ -15,55 +15,44 @@ import MyRequests from "../dashboard/MyRequests";
 import Terms from "../pages/Tarms";
 import Dashboard from "../dashboard/Dashboard";
 import DHome from "../dashboard/DHome";
+import DonationSuccessPage from "../pages/DonationSuccessPage";
+import DonationFailCancelPage from "../pages/DonationFailCancelPage";
+
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: Root,
     children: [
-      {
-        path: "/",
-        Component: Home,
-      },
-      {
-        path: "*",
-        Component: Error,
-      },
-      {
-        path: "/about",
-        Component: About,
-      },
-      {
-        path : "/available-foods",
-        Component: AvailableFoods,
-      },
-      {
-        path : "/signin",
-        Component: Login
-      },
-      {
-        path : "/register",
-        Component: Register
-      },
-      {
-        path : "/terms",
-        Component: Terms
-      },
-      {
-        path : "/about",
-        Component: About
-      },
-      
-      
-      {
-        path: "/food/:id",
-        element: (
+      { path: "/", Component: Home },
+      { path: "*", Component: Error },
+      { path: "/about", Component: About },
+      { path: "/available-foods", Component: AvailableFoods },
+      { path: "/signin", Component: Login },
+      { path: "/register", Component: Register },
+      { path: "/terms", Component: Terms },
+      { path: "/food/:id", element: (
           <PrivateRoute>
             <FoodDetails />
           </PrivateRoute>
         ),
       },
-     
+
+      // =========================
+      // Donation Success / Fail
+      // =========================
+      {
+        path: "/donation-success",
+        element: <DonationSuccessPage />
+      },
+      {
+        path: "/donation-fail",
+        element: <DonationFailCancelPage />
+      },
+      {
+        path: "/donation-cancel",
+        element: <DonationFailCancelPage />
+      },
     ],
   },
   {
@@ -82,7 +71,6 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      
       {
         path: "/dashboard/add-food",
         element: (
@@ -114,7 +102,7 @@ export const router = createBrowserRouter([
             <MyRequests />
           </PrivateRoute>
         ),
-      }
+      },
     ],
   },
 ]);

@@ -7,6 +7,8 @@ import Donations from "../layouts/Donations";
 import FeatureFoods from "../layouts/FeatureFoods";
 import Partners from "../layouts/Partners";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import UserReviews from "../components/UserReviews";
+import DonationButton from "../components/DonationButton";
 
 export default function Home() {
   return (
@@ -30,6 +32,11 @@ export default function Home() {
 
         <SectionHead title="Donations" />
         <Donations />
+
+
+        <SectionHead title="Customer Reviews" />
+        <UserReviews/>
+
       </section>
     </main>
   );

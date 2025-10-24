@@ -69,13 +69,12 @@ export default function Dashboard() {
               <FaHome />
             </span>
             <span
-                className={`${
-                  isIcon ? "hidden" : "flex"
-                } pr-4 transition-all duration-500 ease-in-out`}
-              >
-         Dashboard
-              </span>
-            
+              className={`${
+                isIcon ? "hidden" : "flex"
+              } pr-4 transition-all duration-500 ease-in-out`}
+            >
+              Dashboard
+            </span>
           </Link>
           {dashbordLinks.map((link, index) => (
             <NavLink
@@ -130,11 +129,7 @@ export default function Dashboard() {
             >
               <FaHome />
             </span>
-           
-        
-         Dashboard
-              
-            
+            Dashboard
           </Link>
           {dashbordLinks.map((link, index) => (
             <NavLink

@@ -12,84 +12,97 @@ import {
 import { auth } from "../firebase/firebaseConfig";
 import axios from "axios";
 
+/**
+ * FirebaseAuth Provider
+ * ---------------------
+ * Handles Firebase authentication and synchronizes
+ * with the backend database user data.
+ */
+
 export default function FirebaseAuth({ children }) {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
-  const [dbUser, setDbUser] = useState(null);
+  const [user, setUser] = useState(null); // Firebase user
+  const [dbUser, setDbUser] = useState(null); // Database user
 
-  //Create New User in Firebase
+  /** =============== 🔹 Auth Methods 🔹 =============== */
+
+  // Create New User (Email/Password)
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  //Update User Data
-  const updateData = (displayName, photoURL) => {
-    updateProfile(auth.currentUser, {
-      displayName: displayName,
-      photoURL: photoURL,
-    });
+  // Update Firebase User Profile
+  const updateData = async (displayName, photoURL) => {
+    try {
+      await updateProfile(auth.currentUser, { displayName, photoURL });
+    } catch (error) {
+      console.error("Profile update failed:", error);
+    }
   };
 
-  //Sign in User
+  // Sign In (Email/Password)
   const signInUser = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  //Google Sign in
-  const provider = new GoogleAuthProvider();
+  // Google Sign In
+  const googleProvider = new GoogleAuthProvider();
   const googleSignIn = () => {
     setLoading(true);
-    return signInWithPopup(auth, provider);
+    return signInWithPopup(auth, googleProvider);
   };
 
-  //Sign out User
+  // Sign Out
   const signOutUser = () => {
     setLoading(true);
     return signOut(auth);
   };
 
+  /** =============== 🔹 Sync Firebase with DB 🔹 =============== */
   useEffect(() => {
-    const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
 
-      const getUserData = async (email) => {
+      if (currentUser?.email) {
         try {
-          const res = await axios.get(
-            `${import.meta.env.VITE_SERVER_URL}/users?email=${email}`
+          const response = await axios.get(
+            `${import.meta.env.VITE_SERVER_URL}/users?email=${currentUser.email}`
           );
-          setDbUser(res.data);
-        } catch (err) {
-          console.error("Axios error:", err);
+          setDbUser(response.data);
+        } catch (error) {
+          console.error("Failed to fetch DB user:", error);
+          setDbUser(null);
         } finally {
           setLoading(false);
         }
-      };
-
-      if (currentUser) {
-        getUserData(currentUser.email);
       } else {
         setDbUser(null);
         setLoading(false);
       }
     });
 
+    // Cleanup on unmount
     return () => unSubscribe();
   }, []);
 
+  /** =============== 🔹 Context Value 🔹 =============== */
   const firebaseValue = {
     loading,
     setLoading,
     user,
     setUser,
+    dbUser,
+    setDbUser,
     createUser,
     updateData,
     signInUser,
     googleSignIn,
     signOutUser,
-    dbUser,
   };
+
+  /** =============== 🔹 Render 🔹 =============== */
   return (
     <FirebaseContext.Provider value={firebaseValue}>
       {children}

@@ -8,11 +8,18 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from "chart.js";
 import useMyFoods from "../hooks/useMyFoods";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function DHome() {
   const [totalFoods, setTotalFoods] = useState(null);
@@ -22,7 +29,9 @@ export default function DHome() {
   useEffect(() => {
     const fetchTotalFoods = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/stats/total-foods`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/stats/total-foods`
+        );
         setTotalFoods(res.data.totalFoods);
       } catch (error) {
         console.error("Error fetching total foods:", error);
@@ -34,14 +43,12 @@ export default function DHome() {
   const cards = [
     {
       name: "Total Foods",
-      image: "https://i.ibb.co/LzSDVmvd/pizza.gif",
-      count: totalFoods
+      count: totalFoods,
     },
     {
       name: "My Foods",
-      image: "https://i.ibb.co/LzSDVmvd/pizza.gif",
-      count: myFoods.length
-    }
+      count: myFoods.length,
+    },
   ];
 
   // Bar chart data
@@ -52,20 +59,20 @@ export default function DHome() {
         label: "Food Contribution",
         data: [totalFoods || 0, myFoods.length],
         backgroundColor: ["rgba(255, 99, 132, 0.7)", "rgba(54, 162, 235, 0.7)"],
-        borderRadius: 8
-      }
-    ]
+        borderRadius: 10,
+      },
+    ],
   };
 
   const chartOptions = {
     responsive: true,
     plugins: {
       legend: { display: false },
-      title: { display: true, text: "Food Contribution Overview" }
+      title: { display: true, text: "Food Contribution Overview" },
     },
     scales: {
-      y: { beginAtZero: true }
-    }
+      y: { beginAtZero: true },
+    },
   };
 
   return (
@@ -77,7 +84,7 @@ export default function DHome() {
             key={index}
             className="w-full h-52 shadow-md rounded-lg overflow-hidden flex justify-center items-center border border-secondary relative flex-col gap-5 bg-secondary/10 hover:shadow-lg transition-all duration-300 py-5"
           >
-            <span className="w-28 h-28 lg:w-40 lg:h-40 rounded-full shadow-sm flex justify-center items-center bg-secondary text-white text-3xl font-bold">
+            <span className="w-28 h-28 lg:w-40 lg:h-40 rounded-full shadow-sm flex justify-center items-center bg-secondary text-white text-3xl md:text-5xl font-bold">
               {item.count}
             </span>
             <h1 className="text-xl lg:text-3xl font-semibold text-secondary">

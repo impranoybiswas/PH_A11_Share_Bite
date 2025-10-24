@@ -1,85 +1,88 @@
 import React from "react";
-import useFoods from "../hooks/useFoods";
 import { Link, useNavigate } from "react-router";
+import useFoods from "../hooks/useFoods";
 import { imageError } from "../utilities/myplaceholder";
+import FavouriteButton from "../components/FavouriteButton";
 
 export default function FeatureFoods() {
   const { foods } = useFoods();
 
-  const sortedByQuantityDesc = foods.sort(
-    (a, b) => parseInt(b.quantity) - parseInt(a.quantity)
-  );
+  // Sort foods by quantity (descending)
+  const features = [...foods]
+    .sort((a, b) => parseInt(b.quantity) - parseInt(a.quantity))
+    .slice(0, 6);
 
-  const features = sortedByQuantityDesc.slice(0, 6);
   return (
-    <>
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-center items-center my-5 gap-5">
-        {features.map((feature, index) => (
-          <FeatureCard key={index} feature={feature} />
+    <section className="my-10 text-center w-full">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+        {features.map((feature) => (
+          <FeatureCard key={feature._id} feature={feature} />
         ))}
       </div>
 
       <Link
         to="/available-foods"
-        className="w-full md:w-fit px-8 py-2 flex justify-center items-center text-xl md:text-2xl text-secondary border-2 rounded-lg border-secondary hover:bg-secondary hover:text-white transition-all duration-300 ease-in-out cursor-pointer my-3 font-semibold mb-10"
+        className="inline-block mt-10 px-10 py-3 text-lg md:text-xl font-semibold text-secondary border-2 border-secondary rounded-lg hover:bg-secondary hover:text-white transition-all duration-300"
       >
         Check Available Foods
       </Link>
-    </>
+    </section>
   );
 }
 
 const FeatureCard = ({ feature }) => {
   const navigate = useNavigate();
-  const {
-    _id,
-    name,
-    image_url,
-    pickup_location,
-    expired_date,
-    quantity,
-    status,
-  } = feature;
+  const { _id, name, image_url, pickup_location, expired_date, quantity, status } = feature;
+
+  const isAvailable = status === "Available";
+
   return (
-    <div
+    <article
       onClick={() => navigate(`/food/${_id}`)}
       data-aos="zoom-in"
-      className="w-full rounded-lg flex flex-col gap-2 justify-center items-center relative overflow-hidden border-[1px] border-secondary/30 p-2 hover:shadow-sm hover:border-secondary/60 transition-all duration-300 ease-in-out cursor-pointer"
+      className="relative w-full h-84 overflow-hidden rounded-xl border border-secondary/30 shadow-sm hover:shadow-lg hover:border-secondary/60 transition-all duration-300 cursor-pointer group"
     >
+      {/* Status Badge */}
       <span
-        className={`absolute top-4 right-4 text-xs font-semibold flex items-center gap-2 border-[1px] px-2 py-1 rounded-lg bg-base-100 ${
-          status === "Available"
-            ? "border-green-400 text-green-500"
-            : "border-red-400 text-red-500"
+        className={`absolute top-3 right-3 z-10 px-2 py-1 text-xs font-semibold rounded-md border ${
+          isAvailable
+            ? "border-green-400 text-green-500 bg-base-100"
+            : "border-red-400 text-red-500 bg-base-100"
         }`}
       >
-        {status === "Available" ? "Available" : "Unavailable"}
+        {isAvailable ? "Available" : "Unavailable"}
       </span>
+
+      <span
+        className={`absolute top-3 left-3 z-10 `}
+      >
+        <FavouriteButton/>
+      </span>
+
+      {/* Food Image */}
       <img
-        className="w-full h-44 object-cover rounded-lg border-[1px] border-secondary/30 shadow-sm"
         src={image_url}
         onError={imageError}
+        alt={name}
+        className="w-full h-full object-cover absolute inset-0 z-0 transition-transform duration-500 group-hover:scale-110"
       />
-      <div
-        data-aos="zoom-in"
-        data-tooltip-id="my-tooltip"
-        data-tooltip-content="View Details"
-        className="w-full min-h-34 bg-secondary/60 hover:bg-secondary/80 flex flex-col justify-center items-center border-[1px] border-secondary/30 rounded-lg transition-all duration-300 ease-in-out
-        text-accent cursor-pointer"
-      >
-        <h1 className="text-xl md:text-2xl font-semibold text-center">
+
+      {/* Overlay */}
+      <div className="absolute inset-0 z-10 flex flex-col justify-end items-center bg-gradient-to-b from-transparent via-black/30 to-black/80 text-white p-5 transition-all duration-500 group-hover:via-black/50 group-hover:to-black/90">
+      <span className="absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 scale-0 text-base group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 ease-in-out">View Details</span>
+        <h3 className="text-xl md:text-2xl font-semibold mb-2 text-center drop-shadow-md">
           {name}
-        </h1>
-        <p className="text-base md:text-lg text-center">
-          {pickup_location}
-        </p>
-        <p className="text-base md:text-lg text-center">
-          For <span className="font-semibold">{quantity}</span> Peoples
-        </p>
-        <p className="text-base md:text-lg text-center">
-          Expired: {expired_date}
+        </h3>
+        <div className="text-sm flex flex-col md:flex-row gap-2 md:gap-4 items-center justify-center opacity-90">
+          <span>{pickup_location}</span>
+          <span className="hidden md:inline">|</span>
+          <span>Expires: {expired_date}</span>
+        </div>
+        <p className="mt-2 mb-3 text-sm">
+          Serves <span className="font-semibold">{quantity}</span> people
         </p>
       </div>
-    </div>
+    </article>
   );
 };
