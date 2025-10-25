@@ -1,0 +1,120 @@
+import express from "express";
+import { ObjectId } from "mongodb";
+
+export default (connectDB) => {
+  const router = express.Router();
+
+  // ✅ Add comment
+  router.post("/", async (req, res) => {
+    try {
+      const db = await connectDB();
+      const foodCollection = db.collection("foods");
+
+      const { id, email, commentText } = req.body;
+      if (!id || !email || !commentText) {
+        return res.status(400).json({ message: "Missing fields" });
+      }
+
+      const comment = {
+        _id: new ObjectId(),
+        author: email,
+        comment: commentText,
+        date: new Date(),
+      };
+
+      const result = await foodCollection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $push: { comments: { $each: [comment], $position: 0 } } },
+        { returnDocument: "after" }
+      );
+
+      if (result.matchedCount === 0)
+        return res.status(404).json({ message: "Food not found" });
+
+      res.json({
+        success: true,
+        updatedFood: result.value,
+        addedComment: comment,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Failed to add comment" });
+    }
+  });
+
+  // ✅ Edit comment
+  router.put("/", async (req, res) => {
+    try {
+      const db = await connectDB();
+      const foodCollection = db.collection("foods");
+      const { foodId, commentId, email, newComment } = req.body;
+
+      if (!email || !newComment)
+        return res.status(400).json({ message: "Missing fields" });
+
+      const filter = {
+        _id: new ObjectId(foodId),
+        "comments._id": new ObjectId(commentId),
+        "comments.author": email,
+      };
+
+      const update = {
+        $set: {
+          "comments.$.comment": newComment,
+          "comments.$.date": new Date(),
+        },
+      };
+
+      const result = await foodCollection.findOneAndUpdate(filter, update, {
+        returnDocument: "after",
+      });
+
+      if (result.matchedCount === 0)
+        return res
+          .status(403)
+          .json({ message: "Not allowed or comment not found" });
+
+      res.json({ success: true, updatedFood: result.value });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Failed to edit comment" });
+    }
+  });
+
+  // ✅ Delete comment
+  router.delete("/", async (req, res) => {
+    try {
+      const db = await connectDB();
+      const foodCollection = db.collection("foods");
+      const { foodId, commentId, email } = req.body;
+
+      if (!email) return res.status(400).json({ message: "Email is required" });
+
+      const food = await foodCollection.findOne({
+        _id: new ObjectId(foodId),
+      });
+      if (!food) return res.status(404).json({ message: "Food not found" });
+
+      const comment = (food.comments || []).find(
+        (c) => c._id.toString() === commentId
+      );
+      if (!comment)
+        return res.status(404).json({ message: "Comment not found" });
+      if (comment.author !== email)
+        return res.status(403).json({ message: "Not allowed" });
+
+      const result = await foodCollection.findOneAndUpdate(
+        { _id: new ObjectId(foodId) },
+        { $pull: { comments: { _id: new ObjectId(commentId) } } },
+        { returnDocument: "after" }
+      );
+
+      res.json({ success: true, updatedFood: result.value });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Failed to delete comment" });
+    }
+  });
+
+  return router;
+};

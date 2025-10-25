@@ -6,7 +6,7 @@ import { MdLocationPin } from "react-icons/md";
 import { format } from "date-fns";
 import { IoIosPeople } from "react-icons/io";
 import { RxLapTimer } from "react-icons/rx";
-import { FaPhone } from "react-icons/fa";
+import { FaPhone, FaThumbsUp } from "react-icons/fa";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "../components/Loading";
 import RequestFood from "../components/RequestFood";
@@ -44,7 +44,7 @@ export default function FoodDetails() {
     if (!user?.email) return Swal.fire("Login required", "Please login to like items.", "info");
 
     try {
-      await axiosSecure.put(`/foods/${id}/like`, { email: user.email });
+      await axiosSecure.put(`/like`, { id, email: user?.email });
       queryClient.invalidateQueries(["food", id]);
     } catch (err) {
       console.error(err);
@@ -77,7 +77,7 @@ export default function FoodDetails() {
 
     if (result.isConfirmed) {
       try {
-        await axiosSecure.delete(`/foods/comments/${id}/${commentId}`, { data: { email: user.email } });
+        await axiosSecure.delete(`/comment`, { data: { foodId : id, commentId , email: authorEmail } });
         queryClient.invalidateQueries(["food", id]);
         Swal.fire("Deleted", "Comment removed", "success");
       } catch (err) {
@@ -165,10 +165,10 @@ export default function FoodDetails() {
             <button
               onClick={handleToggleLike}
               className={`flex items-center gap-2 px-4 py-2 rounded-md transition font-medium ${
-                likedBy.includes(user?.email) ? "bg-red-100 text-red-600" : "bg-gray-100 text-gray-700"
+                likedBy.includes(user?.email) ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-700"
               }`}
             >
-              <FcLike />
+              <FaThumbsUp />
               <span>{likedBy.length}</span>
             </button>
 
@@ -178,11 +178,13 @@ export default function FoodDetails() {
             >
               Add Comment
             </button>
+<span>Share On : </span>
+            <SocialShare url={window.location.href} title={name} />
 
             {/* Food request button moved below comment & social */}
             <RequestFood item={food} currentUser={user} />
 
-            <SocialShare url={window.location.href} title={name} />
+            
           </div>
 
           {/* Comments */}

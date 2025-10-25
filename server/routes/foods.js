@@ -1,73 +1,139 @@
-import { Router } from "express";
+import express from "express";
 import { ObjectId } from "mongodb";
 
 export default (connectDB) => {
-  const router = Router();
+  const router = express.Router();
 
-  // GET all foods
-  router.get("/", async (req, res) => {
-    try {
-      const db = await connectDB();
-      const foods = await db.collection("foods").find({}).toArray();
-      res.json(foods);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Failed to fetch foods" });
+  // 🧠 Simple cache system
+  let cachedFoods = null;
+  let lastFetchTime = 0;
+  const CACHE_DURATION = 10000; // 10 seconds
+
+  const getFoods = async () => {
+    const now = Date.now();
+    if (cachedFoods && now - lastFetchTime < CACHE_DURATION) {
+      return cachedFoods;
     }
-  });
 
-  // GET single food by ID
+    const db = await connectDB();
+    cachedFoods = await db.collection("foods").find({}).toArray();
+    lastFetchTime = now;
+    return cachedFoods;
+  };
+
+  // ✅ Get all foods OR filter by author
+router.get("/", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const foodCollection = db.collection("foods");
+
+    const { author } = req.query;
+
+    let query = {};
+    if (author) {
+      query = { author }; // filter foods added by this user
+    }
+
+    const foods = await foodCollection.find(query).toArray();
+
+    if (foods.length === 0) {
+      return res.status(404).json({
+        message: email
+          ? `No foods found for user: ${email}`
+          : "No foods found in the database",
+      });
+    }
+
+    res.json(foods);
+  } catch (err) {
+    console.error("❌ Failed to fetch foods:", err);
+    res.status(500).json({
+      message: "Failed to fetch foods",
+      error: err.message,
+    });
+  }
+});
+
+
+  // ✅ Get single food by ID
   router.get("/:id", async (req, res) => {
     try {
       const db = await connectDB();
-      const food = await db.collection("foods").findOne({
-        _id: new ObjectId(req.params.id),
-      });
-      res.json(food || {});
+      const food = await db
+        .collection("foods")
+        .findOne({ _id: new ObjectId(req.params.id) });
+
+      if (!food)
+        return res.status(404).json({ message: "Food not found" });
+
+      res.json(food);
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Failed to fetch food" });
+      res.status(500).json({
+        message: "Failed to fetch food",
+        error: err.message,
+      });
     }
   });
 
-  // ADD new food
-  router.post("/add-food", async (req, res) => {
+
+  // ✅ Add new food
+  router.post("/", async (req, res) => {
     try {
       const db = await connectDB();
       const result = await db.collection("foods").insertOne(req.body);
-      res.json(result);
+      cachedFoods = null;
+      res
+        .status(201)
+        .json({ message: "Food added", id: result.insertedId });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Failed to add food" });
-    }
-  });
-
-  // UPDATE food by ID
-  router.patch("/update-food/:id", async (req, res) => {
-    try {
-      const db = await connectDB();
-      const result = await db.collection("foods").updateOne(
-        { _id: new ObjectId(req.params.id) },
-        { $set: req.body }
-      );
-      res.json(result);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Failed to update food" });
-    }
-  });
-
-  // DELETE food by ID
-  router.delete("/delete-food/:id", async (req, res) => {
-    try {
-      const db = await connectDB();
-      const result = await db.collection("foods").deleteOne({
-        _id: new ObjectId(req.params.id),
+      res.status(500).json({
+        message: "Failed to add food",
+        error: err.message,
       });
-      res.json(result);
+    }
+  });
+
+  // ✅ Update food by ID
+  router.put("/:id", async (req, res) => {
+    try {
+      const db = await connectDB();
+      const result = await db
+        .collection("foods")
+        .updateOne({ _id: new ObjectId(req.params.id) }, { $set: req.body });
+
+      if (result.modifiedCount === 0)
+        return res
+          .status(404)
+          .json({ message: "Food not found or no changes" });
+
+      cachedFoods = null;
+      res.json({ message: "Food updated" });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Failed to delete food" });
+      res.status(500).json({
+        message: "Failed to update food",
+        error: err.message,
+      });
+    }
+  });
+
+  // ✅ Delete food by ID
+  router.delete("/:id", async (req, res) => {
+    try {
+      const db = await connectDB();
+      const result = await db
+        .collection("foods")
+        .deleteOne({ _id: new ObjectId(req.params.id) });
+
+      if (result.deletedCount === 0)
+        return res.status(404).json({ message: "Food not found" });
+
+      cachedFoods = null;
+      res.json({ message: "Food deleted" });
+    } catch (err) {
+      res.status(500).json({
+        message: "Failed to delete food",
+        error: err.message,
+      });
     }
   });
 

@@ -1,12 +1,8 @@
-import { Router } from "express";
-import fetch from "node-fetch";
-import { config } from "dotenv";
+import express from "express";
+import { ObjectId } from "mongodb";
 
 export default (connectDB) => {
-  const router = Router();
-
-  // Load environment variables
-  config({ path: ".env.local" });
+  const router = express.Router();
 
   // ===========================
   // Create donation payment
@@ -16,11 +12,19 @@ export default (connectDB) => {
       const { amount, doner } = req.body;
 
       if (!amount || !doner) {
-        return res.status(400).json({ message: "Missing fields: amount or doner" });
+        return res
+          .status(400)
+          .json({ message: "Missing fields: amount or doner" });
       }
 
-      if (!process.env.SSLC_STORE_ID || !process.env.SSLC_STORE_PASS || !process.env.CLIENT_URL) {
-        return res.status(500).json({ message: "Missing SSLCommerz environment variables" });
+      if (
+        !process.env.SSLC_STORE_ID ||
+        !process.env.SSLC_STORE_PASS ||
+        !process.env.CLIENT_URL
+      ) {
+        return res
+          .status(500)
+          .json({ message: "Missing SSLCommerz environment variables" });
       }
 
       const db = await connectDB();
@@ -45,9 +49,9 @@ export default (connectDB) => {
         total_amount: amount,
         currency: "BDT",
         tran_id: tranId,
-        success_url: `${process.env.CLIENT_URL}/donation-success?tran_id=${tranId}`,
-        fail_url: `${process.env.CLIENT_URL}/donation-fail?tran_id=${tranId}`,
-        cancel_url: `${process.env.CLIENT_URL}/donation-cancel?tran_id=${tranId}`,
+        success_url: `${process.env.BASE_URL}/donations/success/${tranId}`,
+        fail_url: `${process.env.BASE_URL}/donations/fail/${tranId}`,
+        cancel_url: `${process.env.BASE_URL}/donations/fail/${tranId}`,
         cus_name: doner,
         cus_email: doner,
         cus_phone: "N/A",
@@ -62,10 +66,13 @@ export default (connectDB) => {
       };
 
       // Make POST request to SSLCommerz sandbox
-      const response = await fetch("https://sandbox.sslcommerz.com/gwprocess/v4/api.php", {
-        method: "POST",
-        body: new URLSearchParams(payload),
-      });
+      const response = await fetch(
+        "https://sandbox.sslcommerz.com/gwprocess/v4/api.php",
+        {
+          method: "POST",
+          body: new URLSearchParams(payload),
+        }
+      );
 
       const data = await response.json();
       console.log("SSLCommerz response:", data);
@@ -80,43 +87,57 @@ export default (connectDB) => {
       }
     } catch (err) {
       console.error("SSLCommerz error:", err);
-      return res.status(500).json({ message: "Payment initiation failed", error: err.message });
+      return res
+        .status(500)
+        .json({ message: "Payment initiation failed", error: err.message });
     }
   });
 
   // ===========================
   // Mark donation as success
   // ===========================
-  router.patch("/donations/:tranId/success", async (req, res) => {
+  router.post("/success/:tranId", async (req, res) => {
     try {
+      const { tranId } = req.params;
       const db = await connectDB();
       const donationCollection = db.collection("donations");
 
-      const result = await donationCollection.updateOne(
-        { tranId: req.params.tranId },
-        { $set: { status: "success", updatedAt: new Date() } }
+      await donationCollection.updateOne(
+        { tranId },
+        { $set: { status: "success" } }
       );
 
-      res.json(result);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Failed to mark donation as success" });
+      // ✅ এখন redirect করো frontend এ
+      return res.redirect(`${process.env.CLIENT_URL}/donation-success`);
+    } catch (error) {
+      console.error("Redirect error:", error);
+      res
+        .status(500)
+        .json({ message: "Redirection failed", error: error.message });
     }
   });
 
   // ===========================
-  // Delete donation (fail/cancel)
+  // Delete donation (Fail / Cancel)
   // ===========================
-  router.delete("/donations/:tranId", async (req, res) => {
+  router.post("/fail/:tranId", async (req, res) => {
     try {
+      const { tranId } = req.params;
       const db = await connectDB();
       const donationCollection = db.collection("donations");
 
-      const result = await donationCollection.deleteOne({ tranId: req.params.tranId });
-      res.json(result);
+      // Delete the pending donation
+      const result = await donationCollection.deleteOne({ tranId });
+
+      console.log(`❌ Donation failed/canceled: ${tranId}`);
+
+      // Redirect user back to client
+      return res.redirect(`${process.env.CLIENT_URL}/donation-fail`);
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Failed to delete donation" });
+      console.error("Failed to delete donation:", err);
+      res
+        .status(500)
+        .json({ message: "Failed to delete donation", error: err.message });
     }
   });
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function CommentModal({
@@ -30,13 +31,16 @@ export default function CommentModal({
 
     try {
       if (editingComment) {
-        await axiosSecure.put(`/comments/${foodId}/${editingComment._id}`, {
+        await axiosSecure.put(`/comment`, {
+          foodId, 
+          commentId : editingComment._id,
           email: currentUser.email,
           newComment: text,
+          
         });
         Swal.fire("Updated", "Comment updated successfully", "success");
       } else {
-        await axiosSecure.post("/comments", {
+        await axiosSecure.post("/comment", {
           id: foodId,
           email: currentUser.email,
           commentText: text,

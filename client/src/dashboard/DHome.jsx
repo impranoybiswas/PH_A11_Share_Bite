@@ -1,5 +1,3 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -11,6 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import useMyFoods from "../hooks/useMyFoods";
+import useFoods from "../hooks/useFoods";
 
 ChartJS.register(
   CategoryScale,
@@ -22,23 +21,15 @@ ChartJS.register(
 );
 
 export default function DHome() {
-  const [totalFoods, setTotalFoods] = useState(null);
+const { foods } = useFoods()
   const { myFoods } = useMyFoods();
 
-  // Fetch total foods from API
-  useEffect(() => {
-    const fetchTotalFoods = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_URL}/stats/total-foods`
-        );
-        setTotalFoods(res.data.totalFoods);
-      } catch (error) {
-        console.error("Error fetching total foods:", error);
-      }
-    };
-    fetchTotalFoods();
-  }, []);
+  console.log(myFoods);
+
+  const totalFoods = foods.length;
+  const totalMyFoods = myFoods.length;
+
+  
 
   const cards = [
     {
@@ -47,7 +38,7 @@ export default function DHome() {
     },
     {
       name: "My Foods",
-      count: myFoods.length,
+      count: totalMyFoods,
     },
   ];
 
@@ -57,7 +48,7 @@ export default function DHome() {
     datasets: [
       {
         label: "Food Contribution",
-        data: [totalFoods || 0, myFoods.length],
+        data: [totalFoods || 0, totalMyFoods || 0],
         backgroundColor: ["rgba(255, 99, 132, 0.7)", "rgba(54, 162, 235, 0.7)"],
         borderRadius: 10,
       },

@@ -6,5 +6,6 @@ export default function useAuth() {
   if (!context) {
     throw new Error("useAuth must be used within a FirebaseAuth provider");
   }
+
   return context;
 }

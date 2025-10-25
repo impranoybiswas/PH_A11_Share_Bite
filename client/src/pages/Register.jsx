@@ -67,7 +67,7 @@ export default function Register() {
       await createUser(email, password);
       updateData(displayName, photo_url);
 
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/add`, userData);
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/users`, userData);
 
       navigate(location.state || "/", { replace: true });
       setLoading(false);
@@ -99,8 +99,8 @@ export default function Register() {
         phone: "",
         email: user.email,
       };
-      const res = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/users/add`,
+      const res = await axios.put(
+        `${import.meta.env.VITE_SERVER_URL}/users?email=${user.email}`,
         userData
       );
       console.log("MongoDB response:", res.data);

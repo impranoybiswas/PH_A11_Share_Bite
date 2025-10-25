@@ -16,7 +16,7 @@ import Terms from "../pages/Tarms";
 import Dashboard from "../dashboard/Dashboard";
 import DHome from "../dashboard/DHome";
 import DonationSuccessPage from "../pages/DonationSuccessPage";
-import DonationFailCancelPage from "../pages/DonationFailCancelPage";
+import DonationFailPage from "../pages/DonationFailPage";
 
 
 export const router = createBrowserRouter([
@@ -47,11 +47,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/donation-fail",
-        element: <DonationFailCancelPage />
-      },
-      {
-        path: "/donation-cancel",
-        element: <DonationFailCancelPage />
+        element: <DonationFailPage />
       },
     ],
   },

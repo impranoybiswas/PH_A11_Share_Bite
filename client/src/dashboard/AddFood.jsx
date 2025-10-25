@@ -26,7 +26,7 @@ export default function AddFood() {
     const addData = { author: user.email, ...formData, status: "Available", order_by: { user: null, location: null, time: null }  };
 
     try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/add-food`, addData);
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/foods`, addData);
       e.target.reset();
       Swal.fire({
         position: "center",
@@ -111,10 +111,10 @@ export default function AddFood() {
             />
             <fieldset className="fieldset w-full">
               <legend className="fieldset-legend text-[8px] md:text-[10px] bg-base-100 py-[2px] px-2 ml-2 border-secondary border-[1px] rounded-t-md w-fit border-b-0">
-                Comments <span className="opacity-60">(Optional)</span>
+                Description <span className="opacity-60">(Optional)</span>
               </legend>
               <textarea
-              name="comment"
+              name="desc"
                 className="textarea textarea-secondary h-24 w-full focus-within:outline-offset-0"
                 placeholder="Information about this foods."
               ></textarea>

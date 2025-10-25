@@ -1,24 +1,34 @@
-import { useContext, useEffect, useState } from "react";
-import useFoods from "./useFoods";
-import { FirebaseContext } from "../providers/Context";
+import { useEffect, useState } from "react";
+import useAuth from "./useAuth";
+import axios from "axios";
 
 export default function useMyFoods() {
-  const { user } = useContext(FirebaseContext);
-  const { foods, loading: foodsLoading, fetchFoods } = useFoods();
-
+  const { user, loading: authLoading } = useAuth();
   const [myFoods, setMyFoods] = useState([]);
-  const [reqFoods, setReqFoods] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user?.email && !foodsLoading) {
-      const filtered = foods.filter(food => food.author === user.email);
-      const reqFiltered = foods.filter(food => food.order_by.user === user.email);
-      setMyFoods(filtered);
-      setReqFoods(reqFiltered);
+  const fetchMyFoods = async (email) => {
+    if (!email) return; // No user yet, skip
+
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/foods?author=${email}`
+      );
+      setMyFoods(res.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch user foods:", error);
+      setMyFoods([]);
+    } finally {
       setLoading(false);
     }
-  }, [foods, user, foodsLoading]);
+  };
 
-  return { myFoods, reqFoods, loading, refetch: fetchFoods };
+  useEffect(() => {
+    if (!authLoading && user?.email) {
+      fetchMyFoods(user.email);
+    }
+  }, [user, authLoading]);
+
+  return { myFoods, loading, refetchMyFoods: () => fetchMyFoods(user?.email) };
 }
