@@ -5,12 +5,11 @@ import likeRoute from "./like.js";
 import commentRoute from "./comment.js";
 import donationsRoute from "./donations.js";
 
-
 export default (connectDB) => {
   const router = express.Router();
 
   router.get("/", (req, res) => {
-    res.send("Welcome to the Items API 🚀");
+    res.send("🚀 Welcome to the Share Bite API!");
   });
 
   router.use("/foods", foodsRoute(connectDB));

@@ -3,13 +3,16 @@ import axios from "axios";
 import Loading from "../components/Loading";
 import Container from "../customs/Container";
 import SectionHead from "../customs/SectionHead";
-import useMyFoods from "../hooks/useMyFoods";
 import useAuthor from "../hooks/useAuthor";
 import { avatarError } from "../utilities/myplaceholder";
 import toast from "react-hot-toast";
+import useMyOrders from "../hooks/useMyOrders";
 
 export default function MyRequests() {
-  const { reqFoods, loading } = useMyFoods();
+
+  const { myOrders, loading } = useMyOrders();
+
+
 
 
   const handleRemoveRequest = async (id) => {
@@ -29,7 +32,7 @@ export default function MyRequests() {
 
   if (loading) return <Loading />;
 
-  if (reqFoods.length === 0)
+  if (myOrders.length === 0)
     return (
       <Container>
         <div className="text-center text-3xl font-semibold col-span-1 md:col-span-3 border-[1px] border-gray-200 p-5 rounded-lg mt-5">
@@ -43,7 +46,7 @@ export default function MyRequests() {
       <section className="w-11/12 md:w-4/5 lg:w-3/5 mx-auto">
         <SectionHead title="My Request Foods" subtitle="List of my requested foods." />
         <div className="w-full flex flex-col gap-3 items-center">
-          {reqFoods.map((item) => (
+          {myOrders.map((item) => (
             <MyFoodCard
               key={item._id}
               item={item}

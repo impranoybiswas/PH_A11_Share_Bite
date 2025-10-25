@@ -79,39 +79,43 @@ export default (connectDB) => {
   });
 
   // ✅ 3. Update user by email (PUT /?email=someone@example.com)
-router.put("/", async (req, res) => {
+  router.put("/", async (req, res) => {
     try {
       const db = await connectDB();
       const userCollection = db.collection("users");
-  
+
       const email = req.query.email;
       if (!email) {
-        return res.status(400).json({ message: "Query parameter `email` is required" });
+        return res
+          .status(400)
+          .json({ message: "Query parameter `email` is required" });
       }
-  
+
       const updates = req.body;
       if (!updates || Object.keys(updates).length === 0) {
-        return res.status(400).json({ message: "Request body must contain fields to update" });
+        return res
+          .status(400)
+          .json({ message: "Request body must contain fields to update" });
       }
-  
+
       // Prevent accidental replacement of email or _id unless intended
       delete updates._id;
       delete updates.email;
-  
+
       const result = await userCollection.findOneAndUpdate(
         { email },
         { $set: updates },
         { returnDocument: "after" } // return the document AFTER the update
       );
-  
+
       if (result.matchedCount === 0) {
         // matchedCount === 0 -> no user found
         return res.status(404).json({ message: "User not found" });
       }
-  
+
       // invalidate cache
       cachedUsers = null;
-  
+
       res.json({
         message: "User updated successfully",
         user: result.value,
@@ -124,7 +128,7 @@ router.put("/", async (req, res) => {
       });
     }
   });
-  
+
   // ✅ 4. Delete user by ID (optional)
   router.delete("/:id", async (req, res) => {
     try {
